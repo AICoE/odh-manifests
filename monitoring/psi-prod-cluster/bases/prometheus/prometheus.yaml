@@ -60,4 +60,3 @@ spec:
   - secret:
       secretName: default-ingress-cert
     name: router-ca
-
