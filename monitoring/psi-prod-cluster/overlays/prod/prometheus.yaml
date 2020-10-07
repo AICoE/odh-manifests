@@ -3,7 +3,7 @@ kind: Prometheus
 metadata:
   labels:
     prometheus: aicoe-sre
-  name: aicoe-sre-prometheus
+  name: dh-prometheus
   namespace: dh-psi-monitoring
 spec:
   additionalScrapeConfigs:
