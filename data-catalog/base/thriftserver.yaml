@@ -1,0 +1,487 @@
+---
+apiVersion: v1
+kind: ImageStream
+metadata:
+  name: thriftserver-custom-authenticator
+
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: thriftserver-custom-authenticator
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: thriftserver-custom-authenticator:latest
+  source:
+    type: Git
+    contextDir: thriftserver-custom-authenticator
+    git:
+      uri: https://gitlab.cee.redhat.com/data-hub/dh-data-catalog.git
+      ref: master
+  strategy:
+    type: Docker
+    dockerStrategy:
+      env:
+        - name: GIT_SSL_NO_VERIFY
+          value: 'true'
+  triggers:
+    - type: ConfigChange
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "postgresql-secrets"
+  labels:
+    name: postgresql-secrets
+    template: dh-data-catalog
+    app: thriftserver
+  annotations:
+    template.openshift.io/expose-username: "{.data['database-user']}"
+    template.openshift.io/expose-password: "{.data['database-password']}"
+    template.openshift.io/expose-database_name: "{.data['database-name']}"
+stringData:
+  database-user: datacatalog
+  database-password: datacatalog
+  database-name: datacatalog
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-exporter
+  labels:
+    name: postgres-exporter
+    template: dh-data-catalog
+    app: thriftserver
+stringData:
+  DATA_SOURCE_NAME: "postgresql://datacatalog:datacatalog@localhost:5432/datacatalog?sslmode=disable"
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: thriftserver-secrets
+  labels:
+    name: thriftserver-secrets
+    template: dh-data-catalog
+    app: thriftserver
+stringData:
+  AWS_ACCESS_KEY_ID: changeme
+  AWS_SECRET_ACCESS_KEY: changeme
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: "postgresql"
+  labels:
+    template: dh-data-catalog
+    app: thriftserver
+  annotations:
+    template.openshift.io/expose-uri: postgres://{.spec.clusterIP}:{.spec.ports[?(.name=="postgresql")].port}
+spec:
+  ports:
+  - name: postgresql
+    protocol: TCP
+    port: 5432
+    targetPort: 5432
+    nodePort: 0
+  selector:
+    name: "postgresql"
+  type: ClusterIP
+  sessionAffinity: None
+status:
+  loadBalancer: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: thriftserver
+  labels:
+    name: thrift-server-service
+    template: dh-data-catalog
+    app: thriftserver
+spec:
+  selector:
+    name: thriftserver-deployment
+  type: NodePort
+  ports:
+  - name: 10000-tcp
+    port: 10000
+    protocol: TCP
+    targetPort: 10000
+  - name: 4040-tcp
+    port: 4040
+    protocol: TCP
+    targetPort: 4040
+  - name: 42000-tcp
+    port: 42000
+    protocol: TCP
+    targetPort: 42000
+  - name: 42100-tcp
+    port: 42100
+    protocol: TCP
+    targetPort: 42100
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "postgresql"
+  labels:
+    template: dh-data-catalog
+    app: thriftserver
+  annotations:
+    volume.beta.kubernetes.io/storage-class: ''
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "thriftserver"
+  labels:
+    template: dh-data-catalog
+    app: thriftserver
+  annotations:
+    volume.beta.kubernetes.io/storage-class: ''
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: "5Gi"
+
+---
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  name: "postgresql"
+  labels:
+    template: dh-data-catalog
+    app: thriftserver
+  annotations:
+    template.alpha.openshift.io/wait-for-ready: 'true'
+spec:
+  strategy:
+    type: Recreate
+  triggers:
+  - type: ImageChange
+    imageChangeParams:
+      automatic: true
+      containerNames:
+      - postgresql
+      from:
+        kind: ImageStreamTag
+        name: postgresql:9.6
+        namespace: openshift
+      lastTriggeredImage: ''
+  - type: ConfigChange
+  replicas: 1
+  selector:
+    name: "postgresql"
+  template:
+    metadata:
+      labels:
+        name: "postgresql"
+    spec:
+      containers:
+        - name: postgres-exporter
+          image: docker.io/wrouesnel/postgres_exporter
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9187
+              protocol: TCP
+          env:
+            - name: DATA_SOURCE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-exporter
+                  key: DATA_SOURCE_NAME
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: 9187
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: 9187
+        - name: postgresql
+          image: "openshift/postgresql:9.6"
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+          readinessProbe:
+            timeoutSeconds: 1
+            initialDelaySeconds: 5
+            exec:
+              command:
+              - "/usr/libexec/check-container"
+          livenessProbe:
+            timeoutSeconds: 10
+            initialDelaySeconds: 120
+            exec:
+              command:
+              - "/usr/libexec/check-container"
+              - "--live"
+          env:
+          - name: POSTGRESQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: "postgresql-secrets"
+                key: database-user
+          - name: POSTGRESQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: "postgresql-secrets"
+                key: database-password
+          - name: POSTGRESQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: "postgresql-secrets"
+                key: database-name
+          resources:
+            limits:
+              memory: "512Mi"
+          volumeMounts:
+            - name: "postgresql-data"
+              mountPath: "/var/lib/pgsql/data"
+          terminationMessagePath: "/dev/termination-log"
+          imagePullPolicy: IfNotPresent
+          capabilities: {}
+          securityContext:
+            capabilities: {}
+            privileged: false
+      volumes:
+        - name: "postgresql-data"
+          persistentVolumeClaim:
+            claimName: "postgresql"
+      restartPolicy: Always
+      dnsPolicy: ClusterFirst
+
+---
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  name: thriftserver
+  labels:
+    template: dh-data-catalog
+    app: thriftserver
+spec:
+  template:
+    metadata:
+      labels:
+        name: thriftserver-deployment
+        template: dh-data-catalog
+        app: thriftserver
+    spec:
+      initContainers:
+        - name: custom-authenticator-builder
+          image: "thriftserver-custom-authenticator:latest"
+          volumeMounts:
+            - name: custom-authenticator
+              mountPath: /datahub/hive/
+            - name: custom-authenticator-build
+              mountPath: /custom-authenticator/
+      containers:
+        - name: thriftserver
+          image: quay.io/opendatahub/spark-cluster-image:spark24
+          command: ["/entrypoint", "/opt/spark/bin/spark-class", "org.apache.spark.deploy.SparkSubmit", "--class", "org.apache.spark.sql.hive.thriftserver.HiveThriftServer2", "--properties-file", "/etc/spark-properties/thrift-server.conf"]
+          imagePullPolicy: Always
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: thriftserver-secrets
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: thriftserver-secrets
+                  key: AWS_SECRET_ACCESS_KEY
+          volumeMounts:
+            - name: spark-conf
+              mountPath: /etc/spark-properties/
+            - name: "thriftserver-data"
+              mountPath: "/spark-warehouse"
+            - name: custom-authenticator-build
+              mountPath: /opt/spark/jars/datahubauth.jar
+              subPath: datahubauth.jar
+            - name: thriftserver-hdfs-hive
+              mountPath: /opt/spark/conf/hdfs-site.xml
+              subPath: hdfs-site.xml
+          resources:
+            limits:
+              cpu: '2'
+              memory: 4Gi
+            requests:
+              cpu: 400m
+              memory: 1Gi
+          livenessProbe:
+            failureThreshold: 4
+            httpGet:
+              path: /
+              port: 4040
+              scheme: HTTP
+            periodSeconds: 30
+            initialDelaySeconds: 300
+            successThreshold: 1
+            timeoutSeconds: 5
+      restartPolicy: Always
+      volumes:
+        - name: custom-authenticator
+          configMap:
+            name: thriftserver-custom-authenticator
+        - name: thriftserver-hdfs-hive
+          configMap:
+            name: thriftserver-hdfs-hive
+        - name: spark-conf
+          configMap:
+            name: thrift-server-conf
+        - name: "thriftserver-data"
+          persistentVolumeClaim:
+            claimName: "thriftserver"
+        - name: custom-authenticator-build
+          emptyDir: {}
+  replicas: 1
+  strategy:
+    type: Recreate
+  triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        from:
+          kind: ImageStreamTag
+          name: "thriftserver-custom-authenticator:latest"
+        containerNames:
+          - custom-authenticator-builder
+---
+apiVersion: v1
+kind: Route
+metadata:
+  name: thriftserver-ui
+  labels:
+    name: thriftserver-ui-route
+    template: dh-data-catalog
+    app: thriftserver
+spec:
+  port:
+    targetPort: 4040-tcp
+  to:
+    kind: Service
+    name: thriftserver
+    weight: 100
+  wildcardPolicy: None
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: thriftserver-custom-authenticator
+  labels:
+    name: thriftserver-custom-authenticator
+    template: dh-data-catalog
+    app: thriftserver
+data:
+  DataHubAuthenticator.java: |-
+    package datahub.hive;
+
+    import java.util.Hashtable;
+    import javax.security.sasl.AuthenticationException;
+    import org.apache.hive.service.auth.PasswdAuthenticationProvider;
+
+
+    public class DataHubAuthenticator implements PasswdAuthenticationProvider {
+
+        Hashtable<String, String> store = null;
+
+        public DataHubAuthenticator () {
+            store = new Hashtable<String, String>();
+            // The list of username/password pairs that should have
+            // access to the Thriftserver goes here.
+            store.put("hue", "password}");
+        }
+
+        @Override
+        public void Authenticate(String user, String  password) throws AuthenticationException {
+            String storedPasswd = store.get(user);
+
+            if (storedPasswd != null && storedPasswd.equals(password))
+                return;
+            throw new AuthenticationException("DataHubAuthenticator: Error validating user");
+        }
+    }
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: thriftserver-hdfs-hive
+  labels:
+    name: thriftserver-hdfs-hive
+    template: dh-data-catalog
+    app: thriftserver
+data:
+  hdfs-site.xml: |-
+    <?xml version="1.0"?>
+    <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+    <configuration>
+      <property>
+        <name>hive.server2.authentication</name>
+        <value>CUSTOM</value>
+      </property>
+      <property>
+        <name>hive.server2.custom.authentication.class</name>
+        <value>datahub.hive.DataHubAuthenticator</value>
+      </property>
+
+      <property>
+        <name>hadoop.proxyuser.{{ hue_thriftserver_user }}.groups</name>
+        <value>*</value>
+      </property>
+
+      <property>
+        <name>hadoop.proxyuser.{{ hue_thriftserver_user }}.hosts</name>
+        <value>*</value>
+      </property>
+    </configuration>
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: thrift-server-conf
+  labels:
+    name: thrift-server-conf
+    template: dh-data-catalog
+    app: thriftserver
+data:
+  thrift-server.conf: |-
+    spark.master=spark://{{ SPARK_CLUSTER_NAME }}-cluster-opendatahub.{{ NAMESPACE }}.svc:7077
+    spark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem
+    spark.hadoop.fs.s3a.endpoint={{ S3_ENDPOINT }}
+    spark.hadoop.javax.jdo.option.ConnectionDriverName=org.postgresql.Driver
+    spark.hadoop.datanucleus.rdbms.datastoreAdapterClassName=org.datanucleus.store.rdbms.adapter.PostgreSQLAdapter
+    spark.hadoop.javax.jdo.option.ConnectionUserName={{ DATABASE_USER }}
+    spark.hadoop.javax.jdo.option.ConnectionPassword={{ DATABASE_PASSWORD }}
+    spark.hadoop.javax.jdo.option.ConnectionURL=jdbc:postgresql://postgresql.{{ NAMESPACE }}.svc:5432/{{ DATABASE_NAME }}
+    spark.driver.host=thriftserver.{{ NAMESPACE }}.svc
+    spark.driver.port=42000
+    spark.blockManager.port=42100
+    spark.driver.bindAddress=0.0.0.0
+    spark.sql.warehouse.dir=/spark-warehouse
+    spark.cores.max={{ SPARK_MAX_CORES }}
+    spark.executor.memory={{ SPARK_EXECUTOR_MEMORY }}
+    spark.driver.memory={{ SPARK_DRIVER_MEMORY }}
+    spark.sql.adaptive.enabled=true
+    spark.sql.thriftServer.incrementalCollect=true
