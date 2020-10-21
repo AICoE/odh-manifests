@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  name: hue
+spec:
+  template:
+    spec:
+      containers:
+        - name: hue
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: 1
+              memory: 2Gi
