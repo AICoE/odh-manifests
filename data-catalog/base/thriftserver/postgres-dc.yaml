@@ -15,7 +15,6 @@ spec:
           - postgresql
         from:
           kind: ImageStreamTag
-          name: postgresql
     - type: ConfigChange
   replicas: 1
   selector:
