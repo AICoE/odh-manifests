@@ -17,9 +17,6 @@ resources:
 commonLabels:
   app: hue
 
-configurations:
-  - image-transformer-configuration.yaml
-
 images:
   - name: hue
     newName: shgriffi/hue
@@ -29,3 +26,16 @@ images:
     newTag: "5.7"
   - name: mysqld-exporter
     newName: prom/mysqld-exporter
+
+patchesJson6902:
+  - patch: |-
+      - op: add
+        path: /spec/triggers/0/imageChangeParams/from/name
+        value: mysql:5.7
+      - op: add
+        path: /spec/triggers/0/imageChangeParams/from/namespace
+        value: openshift
+    target:
+      kind: DeploymentConfig
+      name: hue-mysql
+      version: v1
