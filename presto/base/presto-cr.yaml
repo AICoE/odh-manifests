@@ -1,0 +1,120 @@
+apiVersion: starburstdata.com/v1
+kind: Presto
+metadata:
+  name: dev-presto
+spec:
+  nameOverride: "dev-presto"
+  clusterDomain: cluster.local
+  environment: ""
+  additionalJvmConfigProperties: ""
+  additionalCatalogs: {}
+  additionalEtcPrestoTextFiles: {}
+  additionalEtcPrestoBinaryFiles: {}
+  licenseSecretName: ""
+  imageNamePrefix: ""
+  additionalBootstrapScriptVolume: {}
+  additionalBootstrapScriptVolumes: {}
+  additionalVolumes: []
+
+
+  prometheus:
+    enabled: true
+    additionalRules: {}
+
+  service:
+    type: NodePort
+    name: "dev-presto"
+    additionalSpecProperties: {}
+    nodePort: 31234
+
+
+  image:
+    name: starburstdata/presto:338-e.3-k8s-0.41
+    pullPolicy: Always
+
+
+  memory:
+    nodeMemoryHeadroom: 2Gi
+    xmxToTotalMemoryRatio: 0.9
+    heapHeadroomPerNodeRatio: 0.3
+    queryMaxMemory: 100Ti
+    queryMaxTotalMemoryPerNodePoolFraction: 0.333
+
+  coordinator:
+    cpuLimit: 1
+    cpuRequest: 1
+    memoryAllocation: 4Gi
+    nodeSelector: {}
+    affinity: {}
+    additionalProperties: ""
+
+  worker:
+    count: 2
+    autoscaling:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 100
+      targetCPUUtilizationPercentage: 80
+    deploymentTerminationGracePeriodSeconds: 7200 # 2 hours
+    cpuLimit: 1
+    cpuRequest: 1
+    memoryAllocation: 4Gi
+    nodeSelector: {}
+    affinity: {}
+    additionalProperties: ""
+
+  readinessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 15
+
+  livenessProbe:
+    initialDelaySeconds: 300
+    periodSeconds: 300
+    failureThreshold: 1
+    timeoutSeconds: 15
+
+  spilling:
+    enabled: false
+    volume:
+      emptyDir: {}
+
+  usageMetrics:
+    enabled: true
+    usageClient:
+      initialDelay: 1m
+      interval: 1m
+
+  hive:
+    awsSecretName: "aws-secret"
+    googleServiceAccountKeySecretName: ""
+    azureAbfsSecretName: ""
+    azureAdlSecretName: ""
+    additionalProperties: ""
+    internalMetastore:
+      postgreSql:
+        jdbcUrl: ""
+        username: ""
+        password: ""
+      internalPostgreSql:
+        enabled: true
+        image:
+          name: centos/postgresql-96-centos7
+          pullPolicy: IfNotPresent
+        storage:
+          className: ""
+          size: 4Gi
+          claimSelector: {}
+        memory: 2Gi
+        cpu: 1
+        nodeSelector: {}
+        affinity: {}
+      s3Endpoint: s3.upshift.redhat.com
+      image:
+        name: starburstdata/hive-metastore:k8s-0.7.osc
+
+        pullPolicy: IfNotPresent
+      memory: 4Gi
+      cpu: 1
+      nodeSelector: {}
+      affinity: {}

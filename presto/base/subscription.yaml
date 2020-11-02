@@ -1,0 +1,11 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: presto-operator
+spec:
+  channel: alpha
+  installPlanApproval: Automatic
+  name: presto-operator
+  source: certified-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: presto-operator.0.32.0
