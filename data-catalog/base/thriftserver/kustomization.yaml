@@ -1,0 +1,42 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - postgres-dc.yaml
+  - postgres-exporter.yaml
+  - postgres-pvc.yaml
+  - postgres-secret.yaml
+  - postgres-service.yaml
+  - thriftserver-custom-authenticator-bc.yaml
+  - thriftserver-custom-authenticator-is.yaml
+  - thriftserver-custom-authenticator-secret.yaml
+  - thriftserver-dc.yaml
+  - thriftserver-hdfs-hive-secret.yaml
+  - thriftserver-pvc.yaml
+  - thriftserver-route.yaml
+  - thriftserver-secret.yaml
+  - thriftserver-server-conf-secret.yaml
+  - thriftserver-service.yaml
+
+images:
+  - name: spark-cluster-image
+    newName: quay.io/opendatahub/spark-cluster-image
+    newTag: spark24
+  - name: postgresql
+    newName: openshift/postgresql
+    newTag: "9.6"
+  - name: postgres-exporter
+    newName: docker.io/wrouesnel/postgres_exporter
+
+patchesJson6902:
+  - patch: |-
+      - op: add
+        path: /spec/triggers/0/imageChangeParams/from/name
+        value: postgresql:9.6
+      - op: add
+        path: /spec/triggers/0/imageChangeParams/from/namespace
+        value: openshift
+    target:
+      kind: DeploymentConfig
+      name: thriftserver-postgres
+      version: v1
