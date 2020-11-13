@@ -26,7 +26,7 @@ images:
     newName: openshift/postgresql
     newTag: "9.6"
   - name: postgres-exporter
-    newName: docker.io/wrouesnel/postgres_exporter
+    newName: quay.io/internaldatahub/postgres_exporter
 
 patchesJson6902:
   - patch: |-

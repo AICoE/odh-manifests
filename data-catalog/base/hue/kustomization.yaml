@@ -16,13 +16,12 @@ resources:
 
 images:
   - name: hue
-    newName: shgriffi/hue
-    newTag: test
+    newName: quay.io/internaldatahub/hue
   - name: mysql
     newName: openshift/mysql
     newTag: "5.7"
   - name: mysqld-exporter
-    newName: prom/mysqld-exporter
+    newName: quay.io/internaldatahub/mysqld-exporter
 
 patchesJson6902:
   - patch: |-
