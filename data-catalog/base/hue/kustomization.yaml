@@ -35,4 +35,10 @@ patchesJson6902:
     target:
       kind: DeploymentConfig
       name: hue-mysql
+      group: apps.openshift.io
       version: v1
+
+commonLabels:
+  opendatahub.io/component: "true"
+  component.opendatahub.io/name: hue
+  component.opendatahub.io/part-of: data-catalog

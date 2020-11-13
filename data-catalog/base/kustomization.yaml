@@ -3,7 +3,3 @@ kind: Kustomization
 resources:
   - ./thriftserver
   - ./hue
-
-commonLabels:
-  opendatahub.io/component: "true"
-  component.opendatahub.io/name: data-catalog
