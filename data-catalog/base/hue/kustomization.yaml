@@ -37,8 +37,3 @@ patchesJson6902:
       name: hue-mysql
       group: apps.openshift.io
       version: v1
-
-commonLabels:
-  opendatahub.io/component: "true"
-  component.opendatahub.io/name: hue
-  component.opendatahub.io/part-of: data-catalog

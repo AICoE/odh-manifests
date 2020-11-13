@@ -41,8 +41,3 @@ patchesJson6902:
       name: thriftserver-postgres
       group: apps.openshift.io
       version: v1
-
-commonLabels:
-  opendatahub.io/component: "true"
-  component.opendatahub.io/name: thriftserver
-  component.opendatahub.io/part-of: data-catalog
