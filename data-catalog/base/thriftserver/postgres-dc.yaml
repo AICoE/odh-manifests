@@ -94,6 +94,6 @@ spec:
       volumes:
         - name: "postgresql-data"
           persistentVolumeClaim:
-            claimName: postgres
+            claimName: postgresql
       restartPolicy: Always
       dnsPolicy: ClusterFirst

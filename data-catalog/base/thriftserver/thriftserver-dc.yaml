@@ -45,7 +45,7 @@ spec:
                   key: AWS_SECRET_ACCESS_KEY
           volumeMounts:
             - name: spark-conf
-              mountPath: /etc/spark-properties
+              mountPath: /etc/spark-properties/
             - name: thriftserver-data
               mountPath: /spark-warehouse
             - name: custom-authenticator-build

@@ -108,6 +108,6 @@ spec:
       volumes:
         - name: mysql
           persistentVolumeClaim:
-            claimName: hue-mysql
+            claimName: mysql
       restartPolicy: Always
       dnsPolicy: ClusterFirst
