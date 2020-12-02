@@ -170,8 +170,8 @@ spec:
     - type: ConfigChange
     - type: ImageChange
 
-# AIOps Data Sci Demo images
 
+# AIOps Data Sci Demo images
 ---
 apiVersion: image.openshift.io/v1
 kind: ImageStream
@@ -189,7 +189,6 @@ spec:
     importPolicy:
       scheduled: true
     name: "latest"
-
 
 ## OCP4 Anomaly Detection Image from https://gitlab.cee.redhat.com/AICoE/ocp4
 ---
@@ -358,6 +357,7 @@ spec:
     importPolicy:
       scheduled: true
     name: "latest"
+
 ---
 kind: BuildConfig
 apiVersion: build.openshift.io/v1
@@ -387,3 +387,34 @@ spec:
   triggers:
     - type: ConfigChange
     - type: ImageChange
+
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    build: s2i-minimal-notebook-gpu
+  name: s2i-minimal-notebook-gpu
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 's2i-minimal-notebook-gpu:3.6'
+  resources:
+    limits:
+      memory: 2Gi
+  runPolicy: Serial
+  source:
+    contextDir: minimal-notebook
+    git:
+      ref: master
+      uri: 'https://github.com/vpavlin/jupyter-notebooks'
+    type: Git
+  strategy:
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: 'python-36-ubi7:10.0-cudnn7-devel-ubi7'
+    type: Source
+  triggers:
+    - type: ConfigChange
