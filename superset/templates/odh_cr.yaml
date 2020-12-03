@@ -62,11 +62,11 @@ spec:
 
       MAPBOX_API_KEY = os.getenv('MAPBOX_API_KEY', '')
 
-      SQLALCHEMY_DATABASE_URI = '{{ $.Values.SUPERSET_SQLALCHEMY_DB_URI | trim | quote }}'
+      SQLALCHEMY_DATABASE_URI = '{{ $.Values.SUPERSET_SQLALCHEMY_DB_URI | trim }}'
 
       SQLALCHEMY_TRACK_MODIFICATIONS = True
 
-      SECRET_KEY = os.getenv('SUPERSET_SECRET_KEY','{{ $.Values.SUPERSET_SECRET_APP_KEY | trim | quote }}')
+      SECRET_KEY = os.getenv('SUPERSET_SECRET_KEY','{{ $.Values.SUPERSET_SECRET_APP_KEY | trim }}')
 
       DATA_DIR = '/var/lib/superset'
 
@@ -74,15 +74,15 @@ spec:
 
       AUTH_TYPE = AUTH_LDAP
 
-      AUTH_LDAP_SERVER = '{{ $.Values.AUTH_LDAP_SERVER | quote }}'
+      AUTH_LDAP_SERVER = '{{ $.Values.AUTH_LDAP_SERVER }}'
 
-      AUTH_LDAP_USERNAME_FORMAT = '{{ $.Values.AUTH_LDAP_USERNAME_FORMAT | quote }}'
+      AUTH_LDAP_USERNAME_FORMAT = '{{ $.Values.AUTH_LDAP_USERNAME_FORMAT }}'
 
-      AUTH_LDAP_SEARCH = '{{ $.Values.AUTH_LDAP_SEARCH | quote }}'
+      AUTH_LDAP_SEARCH = '{{ $.Values.AUTH_LDAP_SEARCH }}'
 
       AUTH_LDAP_ALLOW_SELF_SIGNED = True
 
-      AUTH_USER_REGISTRATION_ROLE = '{{ $.Values.AUTH_USER_REG_ROLE | quote }}'
+      AUTH_USER_REGISTRATION_ROLE = '{{ $.Values.AUTH_USER_REG_ROLE }}'
 
       AUTH_USER_REGISTRATION = True
 
