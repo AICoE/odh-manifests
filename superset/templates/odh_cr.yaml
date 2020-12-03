@@ -1,0 +1,93 @@
+apiVersion: opendatahub.io/v1alpha1
+kind: OpenDataHub
+metadata:
+  name: superset-opendatahub
+  namespace: {{ $.Values.namespace | quote }}
+spec:
+  aicoe-jupyterhub:
+    odh_deploy: false
+
+  spark-operator:
+    odh_deploy: false
+
+  seldon:
+    odh_deploy: false
+
+  jupyter-on-openshift:
+    odh_deploy: false
+
+  kafka:
+    odh_deploy: false
+
+  monitoring:
+    odh_deploy: false
+
+  beakerx:
+    odh_deploy: false
+
+  ai-library:
+    odh_deploy: false
+
+  argo:
+    odh_deploy: false
+
+  # Deployment of Superset
+  superset:
+    odh_deploy: true
+    # Superset Version
+    image: {{  $.Values.SUPERSET_IMAGE | quote }}
+    # Create an admin user
+    superset_admin:
+      admin_usr: admin
+      admin_psw: {{  $.Values.SUPERSET_ADMIN_PASSWORD | quote }}
+      admin_fname: data
+      admin_lname: hub
+      admin_email: data-hub@redhat.com
+    #
+    gunicorn_limit_request_field_size: {{  $.Values.SUPERSET_GUNICORN_LIMIT_REQUEST_FIELD_SIZE | quote }}
+    gunicorn_limit_request_line: {{  $.Values.SUPERSET_GUNICORN_LIMIT_REQUEST_LINE | quote }}
+    # The data volume is where you would mount your SQLite file or a volume to collect any logs that are routed there
+    data_volume_size: {{  $.Values.SUPERSET_DATA_VOLUME_SIZE | quote }}
+    # Secret App Key
+    superset_secret_app_key: {{  $.Values.SUPERSET_SECRET_APP_KEY | quote }}
+    # Postgres configs
+    postgresql_password: {{  $.Values.POSTGRESQL_PASSWORD | quote }}
+    # Storage Class
+    storage_class_name: {{  $.Values.STORAGE_CLASS_NAME | quote }}
+
+    config: |
+      "import os
+
+      from flask_appbuilder.security.manager import AUTH_DB, AUTH_LDAP
+
+      MAPBOX_API_KEY = os.getenv('MAPBOX_API_KEY', '')
+
+      SQLALCHEMY_DATABASE_URI = '{{ $.Values.SUPERSET_SQLALCHEMY_DB_URI | trim | quote }}'
+
+      SQLALCHEMY_TRACK_MODIFICATIONS = True
+
+      SECRET_KEY = os.getenv('SUPERSET_SECRET_KEY','{{ $.Values.SUPERSET_SECRET_APP_KEY | trim | quote }}')
+
+      DATA_DIR = '/var/lib/superset'
+
+      LOG_LEVEL = 'INFO'
+
+      AUTH_TYPE = AUTH_LDAP
+
+      AUTH_LDAP_SERVER = '{{ $.Values.AUTH_LDAP_SERVER | quote }}'
+
+      AUTH_LDAP_USERNAME_FORMAT = '{{ $.Values.AUTH_LDAP_USERNAME_FORMAT | quote }}'
+
+      AUTH_LDAP_SEARCH = '{{ $.Values.AUTH_LDAP_SEARCH | quote }}'
+
+      AUTH_LDAP_ALLOW_SELF_SIGNED = True
+
+      AUTH_USER_REGISTRATION_ROLE = '{{ $.Values.AUTH_USER_REG_ROLE | quote }}'
+
+      AUTH_USER_REGISTRATION = True
+
+      AUTH_LDAP_USE_TLS = False
+
+      AUTH_ROLE_ADMIN = 'Admin'
+
+      PUBLIC_ROLE_LIKE_GAMMA = True"
