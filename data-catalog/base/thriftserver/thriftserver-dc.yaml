@@ -63,7 +63,7 @@ spec:
           livenessProbe:
             failureThreshold: 4
             httpGet:
-              path: /
+              path: /jobs/
               port: 4040
               scheme: HTTP
             periodSeconds: 30
