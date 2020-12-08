@@ -10,5 +10,24 @@ resources:
   - github.com/argoproj/argo/manifests/namespace-install?ref=v2.11.1
   - https://raw.githubusercontent.com/argoproj/argo/v2.11.1/manifests/cluster-install/workflow-controller-rbac/workflow-aggregate-roles.yaml
 
+images:
+  - name: argoproj/argocli
+    newName: quay.io/thoth-station/argocli
+    newTag: v2.11.0 # Does not match manifests!
+  - name: argoproj/workflow-controller
+    newName: quay.io/thoth-station/workflow-controller
+    newTag: v2.11.0 # Does not match manifests!
+
+patchesJson6902:
+  - patch: |
+      - op: replace
+        path: /spec/template/spec/containers/0/args/3
+        value: quay.io/thoth-station/argoexec:v2.11.0
+    target:
+      group: apps
+      kind: Deployment
+      name: workflow-controller
+      version: v1
+
 patchesStrategicMerge:
   - ./workflow-controller-configmap.yaml
