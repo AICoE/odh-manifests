@@ -1,6 +1,0 @@
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: mysql
-  annotations:
-    volume.beta.kubernetes.io/storage-class: "ceph-dyn-datahub-prod-psi"
