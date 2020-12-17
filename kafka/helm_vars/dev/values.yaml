@@ -11,5 +11,4 @@ zookeeper_storage_size: "10Gi"
 zookeeper_storage_class: ""
 probe_delay_seconds: "15"
 openshift_registry_url: "docker-registry.default.svc:5000"
-kafka_connect_memory: 1Gi
 topic_default_replicas: 1

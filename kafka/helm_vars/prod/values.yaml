@@ -12,4 +12,3 @@ zookeeper_storage_size: "10Gi"
 zookeeper_storage_class: ceph-dyn-datahub-prod-psi
 probe_delay_seconds: 175
 openshift_registry_url: docker-registry.default.svc:5000
-kafka_connect_memory: 8Gi
