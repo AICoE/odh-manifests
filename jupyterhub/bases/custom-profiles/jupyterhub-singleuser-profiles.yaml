@@ -76,6 +76,9 @@ profiles:
   resources:
     mem_limit: 256Gi
     cpu_limit: 16
+  env:
+    ENABLE_HOST_IPC: true
+
 - name: AI Ops Users
   users:
     - mcliffor
