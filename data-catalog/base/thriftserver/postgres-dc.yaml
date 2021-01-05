@@ -2,6 +2,8 @@ apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
 metadata:
   name: thriftserver-postgres
+  labels:
+    app: thriftserver
   annotations:
     template.alpha.openshift.io/wait-for-ready: "true"
 spec:

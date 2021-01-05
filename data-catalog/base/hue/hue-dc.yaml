@@ -2,13 +2,17 @@ apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
 metadata:
   name: hue
+  labels:
+    app: hue
 spec:
   selector:
-    deploymentcongfig: hue
+    app: hue
+    deploymentconfig: hue
   template:
     metadata:
       labels:
-        deploymentcongfig: hue
+        app: hue
+        deploymentconfig: hue
     spec:
       containers:
         - name: hue

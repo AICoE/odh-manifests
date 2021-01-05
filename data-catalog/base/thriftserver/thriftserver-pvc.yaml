@@ -2,6 +2,8 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: thriftserver
+  labels:
+    app: thriftserver
   annotations:
     volume.beta.kubernetes.io/storage-class: ""
 spec:

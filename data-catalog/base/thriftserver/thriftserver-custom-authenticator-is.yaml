@@ -2,3 +2,5 @@ apiVersion: image.openshift.io/v1
 kind: ImageStream
 metadata:
   name: thriftserver-custom-authenticator
+  labels:
+    app: thriftserver

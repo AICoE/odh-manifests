@@ -2,6 +2,8 @@ kind: Service
 apiVersion: v1
 metadata:
   name: postgres
+  labels:
+    app: thriftserver
   annotations:
     template.openshift.io/expose-uri: postgres://{.spec.clusterIP}:{.spec.ports[?(.name=="postgresql")].port}
 spec:
