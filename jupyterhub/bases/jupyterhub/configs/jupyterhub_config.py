@@ -20,6 +20,9 @@ def idh_apply_pod_profile(spawner, pod):
 
   for item in nb_container_env:
     if item.name == "ENABLE_HOST_IPC":
+      # This serviceAccount should have the same permission as the 'default' serviceAccount
+      #   with an applied SCC for hostIPC access
+      pod.spec.service_account = 'jupyterhub-nb-hostipc-access'
       pod.spec.host_ipc = True
 
   return pod
