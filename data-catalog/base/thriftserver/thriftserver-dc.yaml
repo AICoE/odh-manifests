@@ -2,6 +2,8 @@ apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
 metadata:
   name: thriftserver
+  labels:
+    app: thriftserver
 spec:
   selector:
     deploymentconfig: thriftserver

@@ -2,6 +2,8 @@ kind: Service
 apiVersion: v1
 metadata:
   name: hue-mysql
+  labels:
+    app: hue
   annotations:
     template.openshift.io/expose-uri: 'mysql://{.spec.clusterIP}:{.spec.ports[?(.name=="mysql")].port}'
 spec:
