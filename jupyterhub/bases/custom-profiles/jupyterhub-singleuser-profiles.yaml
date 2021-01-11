@@ -78,6 +78,15 @@ profiles:
     cpu_limit: 16
   env:
     ENABLE_HOST_IPC: true
+  # Set OpenShift node affinity for a notebook pod. See https://kubernetes.io/docs/concepts/configuration/assign-pod-node/ for more information.
+  node_affinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+          - key: gpu_type
+            operator: In
+            values:
+              - GV100GL
 
 - name: AI Ops Users
   users:
