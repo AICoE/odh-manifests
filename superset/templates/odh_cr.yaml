@@ -52,6 +52,8 @@ spec:
     superset_secret_app_key: {{  $.Values.SUPERSET_SECRET_APP_KEY | quote }}
     # Postgres configs
     postgresql_password: {{  $.Values.POSTGRESQL_PASSWORD | quote }}
+
+    run_init_job: false
     # Storage Class
     storage_class_name: {{  $.Values.STORAGE_CLASS_NAME | quote }}
 
