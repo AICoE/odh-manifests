@@ -190,7 +190,7 @@ spec:
       scheduled: true
     name: "latest"
 
-## OCP4 Anomaly Detection Image from https://gitlab.cee.redhat.com/AICoE/ocp4
+## OCP4 Anomaly Detection Image from https://github.com/aicoe-aiops/ocp4-anomaly-detection-internal
 ---
 apiVersion: image.openshift.io/v1
 kind: ImageStream
@@ -202,7 +202,7 @@ spec:
   tags:
   - from:
       kind: DockerImage
-      name: docker-registry.upshift.redhat.com/aicoe-notebooks/ocp4-anomaly-detection:latest
+      name: docker-registry.upshift.redhat.com/aicoe-notebooks/ocp4-anomaly-detection-internal:latest
     importPolicy:
       scheduled: true
     name: "latest"
