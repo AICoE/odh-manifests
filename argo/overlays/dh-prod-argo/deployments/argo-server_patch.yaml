@@ -1,0 +1,11 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argo-server
+spec:
+  template:
+    spec:
+      nodeSelector:
+        $patch: replace
+        beta.kubernetes.io/os: linux
