@@ -57,6 +57,17 @@ spec:
     # Storage Class
     storage_class_name: {{  $.Values.STORAGE_CLASS_NAME | quote }}
 
+    # Resources allocation
+    superset_cpu_request: {{  $.Values.SUPERSET_CPU_REQUEST | quote }}
+    superset_memory_request: {{  $.Values.SUPERSET_MEMORY_REQUEST | quote }}
+    superset_cpu_limit: {{  $.Values.SUPERSET_CPU_LIMIT | quote }}
+    superset_memory_limit: {{  $.Values.SUPERSET_MEMORY_LIMIT | quote }}
+
+    postgres_cpu_request: {{  $.Values.POSTGRES_CPU_REQUEST | quote }}
+    postgres_memory_request: {{  $.Values.POSTGRES_MEMORY_REQUEST | quote }}
+    postgres_cpu_limit: {{  $.Values.POSTGRES_CPU_LIMIT | quote }}
+    postgres_memory_limit: {{  $.Values.POSTGRES_MEMORY_LIMIT | quote }}
+
     config: |
       "import os
 
