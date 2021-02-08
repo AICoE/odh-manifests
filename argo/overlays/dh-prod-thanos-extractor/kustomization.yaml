@@ -11,3 +11,7 @@ commonLabels:
 resources:
   - ../../base
   - ./membership.yaml
+
+patchesStrategicMerge:
+  - deployments/argo-server_patch.yaml
+  - deployments/workflow-controller_patch.yaml
