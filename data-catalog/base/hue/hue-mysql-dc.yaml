@@ -95,8 +95,12 @@ spec:
                   name: "hue-mysql-secret"
                   key: database-root-password
           resources:
+            requests:
+              cpu: "1"
+              memory: "1Gi"
             limits:
-              memory: "512Mi"
+              cpu: "2"
+              memory: "2Gi"
           volumeMounts:
             - name: "mysql"
               mountPath: "/var/lib/mysql/data"
