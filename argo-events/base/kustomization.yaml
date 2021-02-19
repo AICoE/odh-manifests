@@ -7,4 +7,38 @@ resources:
   - https://raw.githubusercontent.com/argoproj/argo-events/v0.16.0/manifests/cluster-install/rbac/argo-events-aggregate-to-admin.yaml
   - https://raw.githubusercontent.com/argoproj/argo-events/v0.16.0/manifests/cluster-install/rbac/argo-events-aggregate-to-edit.yaml
   - https://raw.githubusercontent.com/argoproj/argo-events/v0.16.0/manifests/cluster-install/rbac/argo-events-aggregate-to-view.yaml
-#
+
+images:
+  - name: argoproj/gateway-controller
+    newName: quay.io/internaldatahub/argo-gateway-controller
+  - name: argoproj/sensor-controller
+    newName: quay.io/internaldatahub/argo-sensor-controller
+  - name: argoproj/eventbus-controller
+    newName: quay.io/internaldatahub/eventbus-controller
+    newTag: v0.16.0
+
+patchesJson6902:
+  - patch: |
+      - op: replace
+        path: /spec/template/spec/containers/0/env/0/value
+        value: quay.io/internaldatahub/gateway-client
+      - op: replace
+        path: /spec/template/spec/containers/0/env/1/value
+        value: quay.io/internaldatahub/gateway-server
+    target:
+      group: apps
+      kind: Deployment
+      name: gateway-controller
+      version: v1
+
+  - patch: |
+      - op: replace
+        path: /spec/template/spec/containers/0/env/0/value
+        value: quay.io/internaldatahub/sensor:v0.16.0
+    target:
+      group: apps
+      kind: Deployment
+      name: sensor-controller
+      version: v1
+
+
