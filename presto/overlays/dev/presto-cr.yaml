@@ -1,0 +1,9 @@
+apiVersion: starburstdata.com/v1
+kind: Presto
+metadata:
+  name: dev-presto
+spec:
+  hive:
+    internalMetastore:
+      postgreSql:
+        jdbcUrl: "jdbc:postgresql://postgres.dh-dev-presto.svc.cluster.local:5432/datacatalog"

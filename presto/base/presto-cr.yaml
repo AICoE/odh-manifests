@@ -97,13 +97,14 @@ spec:
       hive.s3.ssl.enabled=false
       hive.s3.sse.enabled=false
       hive.allow-drop-table=true
+      hive.parquet.use-column-names=true
       #hive.metastore.storage.schema.reader.impl=org.apache.hadoop.hive.metastore.SerDeStorageSchemaReader
     internalMetastore:
       cpu: 1
       image:
         imagepullPolicy: IfNotPresent
       postgreSql:
-        jdbcUrl: "postgresql://datacatalog:datacatalog@postgres:5432/datacatalog"
+        jdbcUrl: "jdbc:postgresql://postgres.local:5432/datacatalog"
         username: "datacatalog"
         password: "datacatalog"
       s3Endpoint: https://s3.upshift.redhat.com/
