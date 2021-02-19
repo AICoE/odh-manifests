@@ -11,3 +11,9 @@ subjects:
     name: data-hub-admins
   - kind: Group
     name: data-hub
+  - kind: Group
+    name: data-hub-openshift-admins
+  - kind: User
+    name: esammons
+  - kind: User
+    name: jeking

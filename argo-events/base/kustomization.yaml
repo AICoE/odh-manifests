@@ -40,5 +40,3 @@ patchesJson6902:
       kind: Deployment
       name: sensor-controller
       version: v1
-
-
