@@ -48,3 +48,18 @@ subjects:
   - kind: ServiceAccount
     name: argocd-manager
     namespace: argocd-manager
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: project-argo-edit-users
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: edit
+subjects:
+  - kind: User
+    name: esammons
+  - kind: User
+    name: jeking
