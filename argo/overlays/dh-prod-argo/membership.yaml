@@ -56,7 +56,7 @@ metadata:
   name: project-argo-edit-users
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: Role
+  kind: ClusterRole
   name: edit
 subjects:
   - kind: User
