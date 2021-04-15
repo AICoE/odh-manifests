@@ -1,0 +1,48 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- ../../base
+
+namespace: "dh-prod-trino"
+
+generators:
+- secret-generator.yaml
+
+patchesStrategicMerge:
+- trino-db-pvc.yaml
+
+patchesJson6902:
+  - patch: |
+      - op: replace
+        path: /data/s3_credentials_secret
+        value: prod-aws-secret
+    target:
+      kind: ConfigMap
+      name: trino-config
+      version: v1
+  - patch: |
+      - op: replace
+        path: /data/trino_db_secret
+        value: prod-trino-db-secret
+    target:
+      kind: ConfigMap
+      name: trino-config
+      version: v1
+  - patch: |
+      - op: replace
+        path: /data/s3_endpoint_url
+        value: https://s3.upshift.redhat.com/
+    target:
+      kind: ConfigMap
+      name: trino-config
+      version: v1
+  - patch: |
+      - op: replace
+        path: /data/trino_environment
+        value: production
+    target:
+      kind: ConfigMap
+      name: trino-config
+      version: v1
