@@ -27,7 +27,7 @@ patchesJson6902:
   - patch: |
       - op: replace
         path: /data/s3_endpoint_url
-        value: https://s3.upshift.redhat.com/
+        value: s3.upshift.redhat.com
     target:
       kind: ConfigMap
       name: trino-config
