@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trino-coordinator
+spec:
+  template:
+    spec:
+      volumes:
+        - name: root-ca
+          secret:
+            secretName: root-ca
+            items:
+              - key: RH-IT-Root-CA.crt
+                path: RH-IT-Root-CA.crt
+        - name: trino-config-volume
+          secret:
+            secretName: trino-config
+            items:
+              - key: config-coordinator.properties
+                path: config-coordinator.properties
+              - key: jvm.config
+                path: jvm.config
+              - key: log.properties
+                path: log.properties
+              - key: node.properties
+                path: node.properties
+              - key: password-authenticator.properties
+                path: password-authenticator.properties
+      containers:
+        - name: trino-coordinator
+          volumeMounts:
+            - mountPath: /etc/trino/certs
+              name: root-ca

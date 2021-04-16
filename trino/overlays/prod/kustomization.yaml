@@ -12,6 +12,9 @@ generators:
 
 patchesStrategicMerge:
 - trino-db-pvc.yaml
+- hive-metastore-dc.yaml
+- trino-config-secret.yaml
+- trino-coordinator-dc.yaml
 
 patchesJson6902:
   - patch: |
