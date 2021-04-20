@@ -49,3 +49,19 @@ patchesJson6902:
       kind: ConfigMap
       name: trino-config
       version: v1
+  - patch: |
+      - op: replace
+        path: /data/trino_cpu_limit
+        value: 12
+    target:
+      kind: ConfigMap
+      name: trino-config
+      version: v1
+  - patch: |
+      - op: replace
+        path: /data/trino_memory_limit
+        value: 12Gi
+    target:
+      kind: ConfigMap
+      name: trino-config
+      version: v1
