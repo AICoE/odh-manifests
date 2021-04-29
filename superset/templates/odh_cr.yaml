@@ -103,4 +103,8 @@ spec:
 
       AUTH_ROLE_ADMIN = 'Admin'
 
-      PUBLIC_ROLE_LIKE = 'Gamma'"
+      PUBLIC_ROLE_LIKE = 'Gamma'
+      
+      FEATURE_FLAGS = {
+        'ENABLE_TEMPLATE_PROCESSING': True,
+      }"
