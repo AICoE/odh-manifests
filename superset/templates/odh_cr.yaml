@@ -104,10 +104,14 @@ spec:
       AUTH_ROLE_ADMIN = 'Admin'
 
       PUBLIC_ROLE_LIKE = 'Gamma'
+
       AUTH_ROLES_MAPPING = {
       'cn=mhicks-all,ou=adhoc,ou=managedGroups,dc=redhat,dc=com': ['CCX'],
+
       'cn=candlepin,ou=Groups,dc=redhat,dc=com': ['Subscriptions'],
+
       'cn=cee-pe,ou=Groups,dc=redhat,dc=com': ['Subscriptions']
+      
       }
 
       # the LDAP user attribute which has their role DNs
