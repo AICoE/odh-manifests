@@ -26,8 +26,17 @@ spec:
                 path: node.properties
               - key: password-authenticator.properties
                 path: password-authenticator.properties
+              - key: access-control.properties
+                path: access-control.properties
+              - key: rules.json
+                path: rules.json
+              - key: group-provider.properties
+                path: group-provider.properties
+              - key: group-mapping.properties
+                path: group-mapping.properties
       containers:
         - name: trino-coordinator
           volumeMounts:
             - mountPath: /etc/trino/certs
               name: root-ca
+            
