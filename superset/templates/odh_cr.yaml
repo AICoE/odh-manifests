@@ -106,11 +106,15 @@ spec:
       PUBLIC_ROLE_LIKE = 'Gamma'
 
       AUTH_ROLES_MAPPING = {
+      'cn=data-hub-openshift-admins,ou=adhoc,ou=managedGroups,dc=redhat,dc=com': ['Admin'],
+
       'cn=mhicks-all,ou=adhoc,ou=managedGroups,dc=redhat,dc=com': ['CCX'],
+
+      'cn=ccx-dev,ou=adhoc,ou=managedGroups,dc=redhat,dc=com': ['CCX Sensitive'],
 
       'cn=candlepin-posix,ou=Groups,dc=redhat,dc=com': ['Subscriptions'],
 
-      'cn=ceeandpe,ou=Groups,dc=redhat,dc=com': ['Subscriptions']
+      'cn=ceeandpe,ou=Groups,dc=redhat,dc=com': ['Subscriptions', 'CCX Sensitive']
 
       }
 
