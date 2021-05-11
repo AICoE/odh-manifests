@@ -26,6 +26,9 @@ commonLabels:
   opendatahub.io/component: "true"
   component.opendatahub.io/name: "trino"
 
+generators:
+- ./secret-generator.yaml
+
 generatorOptions:
   disableNameSuffixHash: true
 
