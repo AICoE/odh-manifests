@@ -19,10 +19,15 @@ spec:
         role: trino-coordinator
     spec:
       volumes:
+        - name: root-ca
+          secret:
+            secretName: root-ca
+            items:
+              - key: RH-IT-Root-CA.crt
+                path: RH-IT-Root-CA.crt
         - name: trino-config-volume
           secret:
             secretName: trino-config
-            defaultMode: 420
             items:
               - key: config-coordinator.properties
                 path: config-coordinator.properties
@@ -32,6 +37,16 @@ spec:
                 path: log.properties
               - key: node.properties
                 path: node.properties
+              - key: password-authenticator.properties
+                path: password-authenticator.properties
+              - key: access-control.properties
+                path: access-control.properties
+              - key: rules.json
+                path: rules.json
+              - key: group-provider.properties
+                path: group-provider.properties
+              - key: group-mapping.properties
+                path: group-mapping.properties
         - name: trino-catalogs-volume
           secret:
             secretName: trino-catalog
@@ -39,6 +54,8 @@ spec:
             items:
               - key: hive.properties
                 path: hive.properties
+              - key: jmx.properties
+                path: jmx.properties
       containers:
         - resources:
             requests:
@@ -74,6 +91,8 @@ spec:
               mountPath: /etc/trino
             - name: trino-catalogs-volume
               mountPath: /etc/trino/catalog
+            - name: root-ca
+              mountPath: /etc/trino/certs
           image: $(trino_image)
           args:
             - --config=/etc/trino/config-coordinator.properties
