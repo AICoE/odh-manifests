@@ -37,8 +37,12 @@ spec:
                 path: log.properties
               - key: node.properties
                 path: node.properties
-              - key: password-authenticator.properties
-                path: password-authenticator.properties
+              - key: ldap-authenticator.properties
+                path: ldap-authenticator.properties
+              - key: file-authenticator.properties
+                path: file-authenticator.properties
+              - key: password.db
+                path: password.db
               - key: access-control.properties
                 path: access-control.properties
               - key: rules.json
