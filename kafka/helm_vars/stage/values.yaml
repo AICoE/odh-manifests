@@ -7,6 +7,6 @@ kafka_storage_size: 5Gi
 kafka_storage_class: ""
 zookeeper_replicas: 3
 zookeeper_storage_size: "5Gi"
-zookeeper_storage_class: "ceph-dyn-data-hub-stage"
+zookeeper_storage_class: ""
 probe_delay_seconds: "15"
 openshift_registry_url: docker-registry.default.svc:5000
