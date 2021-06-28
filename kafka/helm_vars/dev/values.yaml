@@ -5,10 +5,10 @@ kafka_affinity_match: "true"
 kafka_replicas: 1
 offsets_topic_replication_factor: 1
 kafka_storage_size: 10Gi
-kafka_storage_class: ""
+kafka_storage_class: "standard"
 zookeeper_replicas: 1
 zookeeper_storage_size: "10Gi"
-zookeeper_storage_class: ""
+zookeeper_storage_class: "standard"
 probe_delay_seconds: "15"
 openshift_registry_url: "docker-registry.default.svc:5000"
 topic_default_replicas: 1
