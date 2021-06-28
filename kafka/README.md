@@ -50,7 +50,7 @@ configured to monitor multiple namespaces. See [here][2] for more information.
 To deploy Kafka and its supporting artifacts to dev, run the following command:
 
 ```bash
-helm secrets install --generate-name -f secrets.enc.yaml -f helm_vars/dev/values.yaml -f helm_vars/dev/secrets.yaml.
+helm secrets install --generate-name -f secrets.enc.yaml -f helm_vars/dev/values.yaml -f helm_vars/dev/secrets.yaml .
 ```
 
 Once deploy to upgrade the current deployment run the commands:
