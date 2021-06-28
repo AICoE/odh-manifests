@@ -1,7 +1,7 @@
 namespace: dh-dev-message-bus
 kafka_cluster_name: dev
-kafka_affinity_label: node-role.kubernetes.io/compute
-kafka_affinity_match: "true"
+kafka_affinity_label: node-role.kubernetes.io/worker
+kafka_affinity_match: ""
 kafka_replicas: 1
 offsets_topic_replication_factor: 1
 kafka_storage_size: 10Gi
