@@ -6,7 +6,7 @@ Kustomize templates for deploying Argo into Argo CD managed namespaces.
 
 ### Base
 
-The base folder points to a remote kustomize base for [Argo](https://github.com/argoproj/argo/tree/master/manifests). It uses a namespaced variant of the manifests.
+The base folder points to a remote kustomize base for [Argo](https://github.com/argoproj/argo-workflows/tree/master/manifests). It uses a namespaced variant of the manifests.
 
 Additionally all generic Roles are defined here.
 

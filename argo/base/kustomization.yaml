@@ -7,8 +7,8 @@ resources:
   - ./default-sa-rolebinding.yaml
   - ./argo-server-route.yaml
   - ./workflow-controller-metrics-route.yaml
-  - github.com/argoproj/argo/manifests/namespace-install?ref=v2.12.5
-  - https://raw.githubusercontent.com/argoproj/argo/v2.12.5/manifests/cluster-install/workflow-controller-rbac/workflow-aggregate-roles.yaml
+  - github.com/argoproj/argo-workflows/manifests/namespace-install?ref=v2.12.5
+  - https://raw.githubusercontent.com/argoproj/argo-workflows/v2.12.5/manifests/cluster-install/workflow-controller-rbac/workflow-aggregate-roles.yaml
 
 images:
   - name: argoproj/argocli
