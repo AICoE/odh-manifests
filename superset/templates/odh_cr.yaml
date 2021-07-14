@@ -114,7 +114,9 @@ spec:
 
       'cn=candlepin-posix,ou=Groups,dc=redhat,dc=com': ['Subscriptions'],
 
-      'cn=ceeandpe,ou=Groups,dc=redhat,dc=com': ['Subscriptions', 'CCX Sensitive']
+      'cn=ceeandpe,ou=Groups,dc=redhat,dc=com': ['Subscriptions', 'CCX Sensitive'],
+
+      'cn=telemeter-auth,ou=adhoc,ou=managedGroups,dc=redhat,dc=com': ['Telemetry'],
 
       }
 
