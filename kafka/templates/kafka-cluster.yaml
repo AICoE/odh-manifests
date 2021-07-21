@@ -130,15 +130,16 @@ spec:
         type: GAUGE
         labels:
           quantile: "0.$4"
+
     listeners:
-      plain: {}
-      tls: {}
-      external:
-        type: route
+    - name: external
+      port: 9094
+      type: route
+      tls: true
       {{- if $.Values.kafka_route }}
-        overrides:
-          bootstrap:
-            host: {{ $.Values.kafka_route | quote }}
+      configuration:
+        bootstrap:
+          host: {{ $.Values.kafka_route | quote }}
       {{- end }}
 
     config:
